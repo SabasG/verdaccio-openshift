@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  name: verdaccio
+  labels:
+    app: verdaccio
+spec:
+  replicas: 1
+  selector:
+    name: verdaccio
+  template:
+    metadata:
+      labels:
+        name: verdaccio
+    spec:   
+      containers:
+        - name: verdaccio
+          image: verdaccio/verdaccio:4
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4873
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /verdaccio/storage/data
+            - name: config
+              mountPath: /verdaccio/conf 
+            - name: htpasswd
+              mountPath: /verdaccio/storage 
+          resources:
+            limits:
+              cpu: 2
+              memory: 4Gi
+            requests:
+              cpu: 1
+              memory: 2Gi
+          readinessProbe:
+            successThreshold: 1
+            failureThreshold: 3
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            httpGet:
+              path: /
+              port: 4873
+              scheme: HTTP
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: verdaccio-pvc
+        - name: config
+          configMap:
+            name: verdaccio
+            items:
+              - key: verdaccio-config
+                path: config.yaml
+        - name: htpasswd
+          configMap:
+            name: verdaccio
+            items:
+              - key: verdaccio-htpasswd
+                path: htpasswd

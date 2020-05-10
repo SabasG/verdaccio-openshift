@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: verdaccio
+data:
+  verdaccio-config: >
+    storage: /verdaccio/storage/data
+
+    plugins: /verdaccio/plugins
+
+    web:
+      title: Verdaccio
+
+    auth:
+      htpasswd:
+        file: /verdaccio/storage/htpasswd
+        max_users: 1
+
+    uplinks:
+      npmjs:
+        url: https://registry.npmjs.org/
+
+    publish:
+      allow_offline: true
+
+    packages:
+      '@internal/*':
+        access: $all
+        publish: $authenticated
+        unpublish: $authenticated
+
+      '@*/*':
+        access: $all
+        publish: $authenticated
+        unpublish: $authenticated
+        proxy: npmjs
+
+      '**':
+        access: $all
+        publish: $authenticated
+        unpublish: $authenticated
+        proxy: npmjs
+
+    middlewares:
+      audit:
+        enabled: true
+
+    logs:
+      - { type: stdout, format: pretty, level: http }
+  verdaccio-htpasswd: >
+    verdaccio:{SHA}sUpG4ewl49RO2K2gGdvawv/8S+k=

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: 'true'
+  labels:
+    app: verdaccio
+  name: verdaccio
+spec:
+  port:
+    targetPort: 4873-tcp
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: verdaccio
