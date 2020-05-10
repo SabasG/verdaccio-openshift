@@ -2,6 +2,8 @@
 
 Setting up and running verdaccio as private npm registry for scoped packages in openshift.
 
+![](verdaccio%40openshift.png)
+
 ## Set up
 
 The following steps will create a verdaccio service exposed from openshift for handling private packages scoped as "@internal/".
